@@ -45,3 +45,11 @@ guide to making model changes:*
 * Change your models (in models.py).
 * Run python manage.py makemigrations to create migrations for those changes
 * Run python manage.py migrate to apply those changes to the database.
+
+___
+
+### For auth users make app
+
+
+custom auth users
+`https://docs.djangoproject.com/en/1.11/topics/auth/customizing/#a-full-example`
