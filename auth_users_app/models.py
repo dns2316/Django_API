@@ -3,7 +3,7 @@ from django.contrib.auth.models import (
     BaseUserManager, AbstractBaseUser
 )
 
-
+# roles: (3, 'admin'), (2, 'moderator'), (1, 'user'), (0, 'public_user')
 class AppUserManager(BaseUserManager):
     def create_user(self, email, username, image, role=1, password=None):
         """
@@ -24,7 +24,7 @@ class AppUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, password, username, role=2):
+    def create_superuser(self, email, password, username):
         """
         Creates and saves a superuser with the given email and password.
         """
@@ -32,9 +32,9 @@ class AppUserManager(BaseUserManager):
             email,
             username,
             image='localhost:3000/static/admin.png',
-            role=role,
             password=password
         )
+        user.is_admin = True
         user.save(using=self._db)
         return user
 
@@ -49,9 +49,7 @@ class AppUser(AbstractBaseUser):
     username = models.CharField(max_length=35)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    role = models.CharField(max_length=11, choices=(
-        (3, 'admin'), (2, 'moderator'), (1, 'user'), (0, 'public_user')
-    ))
+    is_admin = models.BooleanField(default=False)
     image = models.URLField(max_length=225)
 
     objects = AppUserManager()
@@ -79,13 +77,4 @@ class AppUser(AbstractBaseUser):
     def is_staff(self):
         "Is the user a member of staff?"
         # Simplest possible answer: All admins are staff
-        if self.role == 2:
-            return 'moder'
-        elif self.role == 3:
-            return 'admin'
-        elif self.role == 1:
-            return 'user'
-        elif self.role == 0:
-            return 'public'
-        else:
-            return 'Error role value!'
+        return self.is_admin
