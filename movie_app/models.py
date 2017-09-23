@@ -10,5 +10,5 @@ class Movie(models.Model):
     description = models.TextField(max_length=1500)
     year = models.SmallIntegerField()
 
-    def __str__(self):
-        return self.name
+    # def __str__(self):
+    #     return self.name
